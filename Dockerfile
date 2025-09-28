@@ -4,18 +4,14 @@ FROM node:18-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY backend/package*.json ./backend/
+# Copy frontend package files first
 COPY frontend/package*.json ./frontend/
 
-# Install dependencies
-RUN npm ci
-RUN cd backend && npm ci
+# Install frontend dependencies (including react-scripts)
 RUN cd frontend && npm ci
 
-# Copy source code
-COPY . .
+# Copy frontend source code
+COPY frontend/ ./frontend/
 
 # Build frontend
 RUN cd frontend && npm run build
