@@ -1,250 +1,164 @@
-# Nova Class Calendar
+# Nova Class Calendar - Next.js
 
 Sistema de generación automática de horarios para gimnasio Nova con rotación inteligente de coaches.
 
-## 🚀 Características
+## 🚀 Stack Tecnológico
 
-- **Gestión de Coaches**: Agregar, editar y eliminar coaches con sus especialidades (Power/Cycling)
-- **Restricciones**: Configurar restricciones por coach (días, horarios específicos)
-- **Generación Automática**: Algoritmo inteligente que garantiza rotación equitativa
-- **Drag & Drop**: Modificaciones manuales mediante arrastrar y soltar
-- **Historial**: Tracking de últimas 6 semanas para optimizar rotación
-- **Validaciones**: Máximo 2 clases por día por coach, no dos Power simultáneas
+- **Next.js 15** - Framework React con App Router
+- **TypeScript** - Type safety
+- **MongoDB Atlas** - Base de datos en la nube (free tier)
+- **Tailwind CSS** - Estilos
+- **@dnd-kit** - Drag & drop
+- **Vercel** - Deployment (free)
 
-## 🛠️ Tecnologías
+## 📋 Prerequisitos
 
-### Backend
+- Node.js 20+ (usa `nvm use 20`)
+- Cuenta en MongoDB Atlas (gratis)
 
-- Node.js + Express
-- SQLite (base de datos local)
-- Algoritmo de rotación personalizado
+## 🛠️ Setup
 
-### Frontend
-
-- React 18
-- Tailwind CSS
-- @dnd-kit (drag & drop)
-- Axios (comunicación API)
-
-## 📦 Instalación
-
-### Prerrequisitos
-
-- Node.js 16+
-- npm
-
-### Instalación Rápida
+### 1. Instalar dependencias
 
 ```bash
-# Clonar el repositorio
-git clone <your-repo>
-cd class-calendar
-
-# Instalar todas las dependencias (root, backend y frontend)
-npm run install-all
-```
-
-### Instalación Manual
-
-```bash
-# Instalar dependencias del proyecto principal
-npm install
-
-# Instalar dependencias del backend
-cd backend
-npm install
-
-# Instalar dependencias del frontend
-cd ../frontend
 npm install
 ```
 
-## 🚀 Ejecutar el Proyecto
+### 2. Configurar MongoDB Atlas
 
-### Setup Rápido con Datos de Demo
+1. Ve a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Crea una cuenta gratuita
+3. Crea un cluster (free tier M0)
+4. En "Database Access", crea un usuario con password
+5. En "Network Access", agrega tu IP (o 0.0.0.0/0 para desarrollo)
+6. Click en "Connect" > "Drivers" para obtener tu connection string
+
+### 3. Configurar variables de entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto:
 
 ```bash
-# 1. Instalar dependencias
-npm run install-all
-
-# 2. Iniciar backend (en una terminal)
-npm run server
-
-# 3. Configurar datos de demo (en otra terminal)
-npm run setup-demo
-
-# 4. Iniciar frontend (en otra terminal)
-npm run client
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/nova_calendar?retryWrites=true&w=majority
 ```
 
-### Desarrollo (Ambos servidores)
+Reemplaza `username`, `password`, y `cluster` con tus credenciales.
+
+### 4. Ejecutar en desarrollo
 
 ```bash
-# Desde la raíz del proyecto
 npm run dev
 ```
 
-Esto ejecutará:
+La aplicación estará disponible en `http://localhost:3000`
 
-- Backend en `http://localhost:3001`
-- Frontend en `http://localhost:3000`
+## 🚀 Deployment a Vercel
 
-### Ejecución Individual
+### Deploy automático:
 
-#### Solo Backend
+1. Push tu código a GitHub
+2. Ve a [Vercel](https://vercel.com)
+3. Importa tu repositorio
+4. Agrega la variable de entorno `MONGODB_URI` en Settings > Environment Variables
+5. Deploy!
 
-```bash
-npm run server
-# o
-cd backend && npm start
-```
+Vercel te dará una URL gratis: `https://tu-app.vercel.app`
 
-#### Solo Frontend
-
-```bash
-npm run client
-# o
-cd frontend && npm start
-```
-
-## 📋 Uso del Sistema
-
-### 1. Gestión de Coaches
-
-1. Ve a la pestaña "Coaches"
-2. Agrega coaches con sus especialidades:
-   - **Power**: Para clases Nova Power
-   - **Cycling**: Para clases Nova Cycling
-   - **Ambas**: Coaches que dan ambos tipos
-3. Configura restricciones si es necesario:
-   - **Día**: No disponible ciertos días
-   - **Horario**: No disponible en horarios específicos
-
-### 2. Configuración Semanal
-
-1. Ve a la pestaña "Configuración"
-2. Selecciona la semana deseada
-3. Agrega horarios disponibles:
-   - **Día de la semana**
-   - **Horario** (formato 24h)
-   - **Tipo**: Ambas, solo Power, o solo Cycling
-4. Guarda los cambios
-5. Haz clic en "Generar Horario"
-
-### 3. Modificaciones Manuales
-
-1. Ve a la pestaña "Calendario"
-2. Arrastra y suelta las clases para reorganizar
-3. Los cambios se guardan automáticamente
-
-## 🔧 API Endpoints
-
-### Coaches
-
-- `GET /api/coaches` - Obtener todos los coaches
-- `POST /api/coaches` - Crear nuevo coach
-- `PUT /api/coaches/:id` - Actualizar coach
-- `DELETE /api/coaches/:id` - Eliminar coach
-
-### Restricciones
-
-- `GET /api/coaches/:id/restrictions` - Obtener restricciones
-- `POST /api/coaches/:id/restrictions` - Agregar restricción
-- `DELETE /api/restrictions/:id` - Eliminar restricción
-
-### Horarios
-
-- `GET /api/schedules/:weekStart` - Obtener horarios disponibles
-- `POST /api/schedules/:weekStart` - Configurar horarios
-- `POST /api/generate/:weekStart` - Generar horario automático
-- `GET /api/generated/:weekStart` - Obtener horario generado
-- `PUT /api/generated/:weekStart` - Actualizar horario generado
-
-### Utilidades
-
-- `GET /api/current-week` - Obtener lunes de semana actual
-- `GET /api/history` - Obtener historial de asignaciones
-- `GET /api/health` - Health check
-
-## 📊 Base de Datos
-
-El sistema usa SQLite con las siguientes tablas:
-
-- `coaches` - Información de coaches y especialidades
-- `coach_restrictions` - Restricciones por coach
-- `available_schedules` - Horarios disponibles por semana
-- `schedule_assignments` - Historial de asignaciones
-- `weekly_configs` - Configuraciones y horarios generados
-
-## 🔍 Algoritmo de Rotación
-
-El sistema implementa un algoritmo inteligente que:
-
-1. **Analiza el historial** de las últimas 6 semanas
-2. **Calcula scores de rotación** por coach/horario/tipo
-3. **Aplica restricciones** configuradas
-4. **Balancea la carga** (máx 2 clases/día por coach)
-5. **Garantiza variedad** para los miembros del gym
-
-## 🐛 Solución de Problemas
-
-### Backend no inicia
+### Deploy manual:
 
 ```bash
-cd backend
-npm install
-node server.js
+npm install -g vercel
+vercel
 ```
 
-### Frontend no inicia
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### Base de datos corrupta
-
-Elimina el archivo `backend/nova_calendar.db` y reinicia el backend.
-
-### Errores de CORS
-
-Verifica que el proxy en `frontend/package.json` apunte a `http://localhost:3001`
-
-## 📝 Desarrollo
-
-### Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 class-calendar/
-├── backend/
-│   ├── server.js           # Servidor principal
-│   ├── database.js         # Gestión de base de datos
-│   ├── scheduleGenerator.js # Algoritmo de generación
-│   └── nova_calendar.db    # Base de datos SQLite
-├── frontend/
-│   ├── src/
-│   │   ├── components/     # Componentes React
-│   │   ├── hooks/          # Hooks personalizados
-│   │   ├── services/       # API y servicios
-│   │   └── App.js          # Componente principal
-│   └── public/
-└── package.json           # Scripts principales
+├── app/
+│   ├── api/              # API Routes (backend)
+│   ├── layout.tsx        # Layout principal
+│   ├── page.tsx          # Página principal
+│   └── globals.css       # Estilos globales
+├── components/           # Componentes React
+├── hooks/               # Custom hooks
+├── lib/
+│   ├── db/              # Operaciones de base de datos
+│   ├── mongodb.ts       # Conexión MongoDB
+│   ├── scheduleGenerator.ts  # Algoritmo de generación
+│   ├── api-client.ts    # Cliente API frontend
+│   └── utils.ts         # Utilidades
+└── .env.local          # Variables de entorno (no commiteado)
 ```
 
-### Próximas Mejoras
+## 🔧 API Endpoints
 
-- [ ] Exportar horarios a PDF
+Todos los endpoints están en `/api`:
+
+- `GET/POST /api/coaches` - Gestión de coaches
+- `GET/PUT/DELETE /api/coaches/[id]` - Coach individual
+- `GET/POST/DELETE /api/coaches/[id]/restrictions` - Restricciones
+- `GET/POST /api/schedules/[weekStart]` - Horarios disponibles
+- `POST /api/generate/[weekStart]` - Generar horario automático
+- `GET/PUT /api/generated/[weekStart]` - Horario generado
+- `GET /api/history` - Historial de asignaciones
+- `GET /api/current-week` - Semana actual
+- `GET /api/health` - Health check
+
+## 🎯 Uso
+
+1. **Coaches**: Agrega coaches con sus especialidades (Power/Cycling)
+2. **Configuración**: Define horarios disponibles para la semana
+3. **Generar**: Click en "Generar Horario" para asignación automática
+4. **Calendario**: Visualiza y ajusta manualmente con drag & drop
+
+## 🔥 Características
+
+- ✅ Rotación inteligente basada en historial (últimas 6 semanas)
+- ✅ Restricciones por coach (días, horarios)
+- ✅ Máximo 2 clases por día por coach
+- ✅ Drag & drop para ajustes manuales
+- ✅ Sin backend separado (todo en Next.js)
+- ✅ Deploy gratis a Vercel
+- ✅ Base de datos gratis en MongoDB Atlas
+
+## 🐛 Troubleshooting
+
+### Error de conexión a MongoDB
+
+- Verifica que tu IP esté en la whitelist de MongoDB Atlas
+- Confirma que el MONGODB_URI es correcto
+- Revisa que el usuario tenga permisos de lectura/escritura
+
+### Errores de TypeScript
+
+```bash
+npm run build
+```
+
+Esto mostrará cualquier error de tipos.
+
+### Limpiar cache
+
+```bash
+rm -rf .next
+npm run dev
+```
+
+## 📝 Notas de Desarrollo
+
+- Usa `'use client'` en componentes que usan hooks o estado
+- Las API routes son Server Components por defecto
+- MongoDB queries son async, siempre usa `await`
+- Next.js hace caching agresivo, usa `revalidate` si necesitas
+
+## 🌟 Mejoras Futuras
+
+- [ ] Exportar a PDF
 - [ ] Notificaciones por email
 - [ ] Modo oscuro
-- [ ] Analytics de coaches más activos
-- [ ] Integración con calendario externo
-
-## 📧 Soporte
-
-Para reportar bugs o sugerir mejoras, crea un issue en el repositorio.
+- [ ] Analytics de coaches
+- [ ] Autenticación (si se necesita multi-usuario)
 
 ---
 
-Desarrollado con ❤️ para optimizar los horarios de Nova Gym
+¿Preguntas? Revisa la [documentación de Next.js](https://nextjs.org/docs)
